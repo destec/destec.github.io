@@ -1,0 +1,39 @@
+language: node_js
+node_js:
+  - "6.9"
+env:
+  global:
+    - GH-REF: github.com/destec/destec.github.io.git
+    - secure: "gHRkOWS4/3qkZ8+xY9toKNV17487hMomLuwTBj569T0+WlQMcAL8rr9lSiglLt33Xw2oFq1zUnxq/CmIzYjiudWj7+EYYTX4FvHyrhhajcuy6rNcdiGtzRzLQzYT4WzOgzO+QGgaLOjDuEA5XcRiuWqHb1EBsIR9Ipc689Txz5I="
+
+branches:
+  # blocklist
+  except:
+  - master
+  only:
+  - gh-pages
+
+# Travis-CI Caching
+cache:
+  directories:
+    - node_modules
+
+# S: Build Lifecycle
+install:
+  - npm install
+
+before_script:
+  # - npm install hexo
+
+script:
+  - hexo generate
+
+after_script:
+  - cd public
+  - git init
+  - git config user.name "destec"
+  - git config user.email "catalyst.zhang@gmail.com"
+  - git add .
+  - git commit -m "Update docs"
+  - git push -f "https://${GH_TOKEN}@github.com/destec/destec.github.io.git" master:master
+# E: Build LifeCycle
