@@ -26,7 +26,8 @@ before_script:
   # - npm install hexo
 
 script:
-  - hexo generate
+  - cat _config.yml
+  - hexo generate --debug
 
 after_script:
   - cd public
