@@ -9,29 +9,26 @@
   {% endif %}
 
   <article class="{{ post_class }}" itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="{{ config.url }}{{ url_for(post.path) }}">
+    <link itemprop="mainEntityOfPage" href="{{ config.url }}{{ url_for(post.path) }}">
 
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="{{ theme.author }}">
-    <meta itemprop="description" content="{{ theme.signature }}">
-    <meta itemprop="image" content="{{ url_for( theme.avatar | default(theme.images + '/avatar.gif') ) }}">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="{{ config.title }}">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="{{ config.title }}" src="{{ theme.custom_logo.image }}">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="{{ theme.author }}">
+      <meta itemprop="description" content="{{ theme.signature }}">
+      <meta itemprop="image" content="{{ url_for( theme.avatar | default(theme.images + '/avatar.gif') ) }}">
     </span>
-  </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="{{ config.title }}">
+    </span>
 
     {% if not headlessPost %}
       <header class="post-header">
 
         {# Not to show title for quote posts that do not have a title #}
         {% if not (is_index and post.type === 'quote' and not post.title) %}
-          <{% if theme.seo %}h2{% else %}h1{% endif %} class="post-title" itemprop="name headline">
-            {# Link posts #}
-            {% if post.link %}
+          <{% if theme.seo %}h2{% else %}h1{% endif %} class="post-title" itemprop="name headline">{#
+          #}{# Link posts #}{#
+          #}{% if post.link %}
               {% if post.sticky > 0 %}
                 {{ post.sticky }}
                 <span class="post-sticky-flag" title="{{ __('post.sticky') }}">
@@ -42,21 +39,19 @@
                 {{ post.title or post.link }}
                 <i class="fa fa-external-link"></i>
               </a>
-            {% else %}
-              {% if is_index %}
+            {% else %}{#
+            #}{% if is_index %}
                 {% if post.sticky > 0 %}
                   <span class="post-sticky-flag" title="{{ __('post.sticky') }}">
                     <i class="fa fa-thumb-tack"></i>
                   </span>
                 {% endif %}
-                <a class="post-title-link" href="{{ url_for(post.path) }}" itemprop="url">
-                  {{ post.title | default(__('post.untitled'))}}
-                </a>
-              {% else %}
-                {{ post.title }}
-              {% endif %}
-            {% endif %}
-          </{% if theme.seo %}h2{% else %}h1{% endif %}>
+                <a class="post-title-link" href="{{ url_for(post.path) }}" itemprop="url">{#
+                #}{{ post.title | default(__('post.untitled'))}}{#
+              #}</a>{#
+            #}{% else %}{{ post.title }}{% endif %}{#
+          #}{% endif %}{#
+        #}</{% if theme.seo %}h2{% else %}h1{% endif %}>
         {% endif %}
 
         <div class="post-meta">
@@ -137,14 +132,15 @@
                   <span class="post-comments-count fb-comments-count" data-href="{{ post.permalink }}" itemprop="commentCount">0</span> comments
                 </a>
               </span>
-            {% elseif theme.disqus_shortname %}
+            {% elseif theme.disqus.enable and theme.disqus.count %}
               <span class="post-comments-count">
                 <span class="post-meta-divider">|</span>
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="{{ post.path }}" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="{{ post.path }}" itemprop="commentCount"></span>
                 </a>
               </span>
             {% elseif theme.hypercomments_id %}
@@ -159,22 +155,22 @@
                 </a>
               </span>
               <!--/noindex-->
-            {% elseif is_post() and theme.gentie_productKey %}
+            {% elseif theme.changyan.enable and theme.changyan.appid and theme.changyan.appkey %}
               <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a class="cloud-tie-join-count" href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
-                </a>
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
               </span>
+              {% if is_post() %}
+                <a href="{{ url_for(post.path) }}#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="{{ post.path }}" itemprop="commentsCount"></span>
+                </a>
+              {% else %}
+                <a href="{{ url_for(post.path) }}#SOHUCS" itemprop="discussionUrl">
+                  <span id="url::{{ post.permalink }}" class="cy_cmt_count" data-xid="{{ post.path }}" itemprop="commentsCount" ></span>
+                </a>
+              {% endif %}
             {% endif %}
-          {% endif %}
-
-          {% if not is_index and theme.facebook_sdk.enable and theme.facebook_sdk.like_button %}
-            <span class="post-meta-divider">|</span>
-            <div class="fb-like" data-layout="button_count" data-share="true"></div>
           {% endif %}
 
           {# LeanCould PageView #}
@@ -198,6 +194,41 @@
             </span>
           {% endif %}
 
+          {% if theme.post_wordcount.wordcount or theme.post_wordcount.min2read %}
+            <div class="post-wordcount">
+              {% if theme.post_wordcount.wordcount %}
+                {% if not theme.post_wordcount.separated_meta %}
+                  <span class="post-meta-divider">|</span>
+                {% endif %}
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                {% if theme.post_wordcount.item_text %}
+                  <span class="post-meta-item-text">{{ __('post.wordcount') }}</span>
+                {% endif %}
+                <span title="{{ __('post.wordcount') }}">
+                  {{ wordcount(post.content) }}
+                </span>
+              {% endif %}
+
+              {% if theme.post_wordcount.wordcount and theme.post_wordcount.min2read %}
+                <span class="post-meta-divider">|</span>
+              {% endif %}
+
+              {% if theme.post_wordcount.min2read %}
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                {% if theme.post_wordcount.item_text %}
+                  <span class="post-meta-item-text">{{ __('post.min2read') }}</span>
+                {% endif %}
+                <span title="{{ __('post.min2read') }}">
+                  {{ min2read(post.content) }}
+                </span>
+              {% endif %}
+            </div>
+          {% endif %}
+
           {% if post.description and (not theme.excerpt_description or not is_index) %}
               <div class="post-description">
                   {{ post.description }}
@@ -208,8 +239,7 @@
       </header>
     {% endif %}
 
-
-    <div class="post-body" itemprop="articleBody">
+    <div class="post-body{% if theme.han %} han-init-context{% endif %}" itemprop="articleBody">
 
       {# Gallery support #}
       {% if post.photos and post.photos.length %}
@@ -244,7 +274,7 @@
           {{ post.excerpt }}
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="{{ url_for(post.path) }}{% if theme.scroll_to_more %}#more{% endif %}" rel="contents">
+            <a class="btn" href="{{ url_for(post.path) }}{% if theme.scroll_to_more %}#{{ __('post.more') }}{% endif %}" rel="contents">
               {{ __('post.read_more') }} &raquo;
             </a>
           </div>
@@ -255,7 +285,7 @@
           {% if content.length > theme.auto_excerpt.length %}...{% endif %}
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="{{ url_for(post.path) }}{% if theme.scroll_to_more %}#more{% endif %}" rel="contents">
+            <a class="btn" href="{{ url_for(post.path) }}{% if theme.scroll_to_more %}#{{ __('post.more') }}{% endif %}" rel="contents">
               {{ __('post.read_more') }} &raquo;
             </a>
           </div>
@@ -284,6 +314,11 @@
       {% endif %}
     </div>
 
+    <div>
+      {% if not is_index %}
+        {% include 'post-copyright.swig' with { post: post } %}
+      {% endif %}
+    </div>
 
     <footer class="post-footer">
       {% if post.tags and post.tags.length and not is_index %}
@@ -292,6 +327,34 @@
             <a href="{{ url_for(tag.path) }}" rel="tag"># {{ tag.name }}</a>
           {% endfor %}
         </div>
+      {% endif %}
+
+      {% if not is_index %}
+      {% if theme.rating.enable or (theme.vkontakte_api.enable and theme.vkontakte_api.like) or (theme.facebook_sdk.enable and theme.facebook_sdk.like_button) %}
+        <div class="post-widgets">
+        {% if theme.rating.enable %}
+          <div class="wp_rating">
+            <div id="wpac-rating"></div>
+          </div>
+        {% endif %}
+
+        {% if (theme.vkontakte_api.enable and theme.vkontakte_api.like) or (theme.facebook_sdk.enable and theme.facebook_sdk.like_button) %}
+          <div class="social-like">
+            {% if theme.vkontakte_api.enable and theme.vkontakte_api.like %}
+              <div class="vk_like">
+                <span id="vk_like"></span>
+              </div>
+            {% endif %}
+
+            {% if theme.facebook_sdk.enable and theme.facebook_sdk.like_button %}
+              <div class="fb_like">
+                <div class="fb-like" data-layout="button_count" data-share="true"></div>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+        </div>
+      {% endif %}
       {% endif %}
 
       {% if not is_index and (post.prev or post.next) %}
