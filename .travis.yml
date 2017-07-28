@@ -4,7 +4,7 @@ node_js:
 env:
   global:
     - GH-REF: github.com/destec/destec.github.io.git
-    - secure: "gHRkOWS4/3qkZ8+xY9toKNV17487hMomLuwTBj569T0+WlQMcAL8rr9lSiglLt33Xw2oFq1zUnxq/CmIzYjiudWj7+EYYTX4FvHyrhhajcuy6rNcdiGtzRzLQzYT4WzOgzO+QGgaLOjDuEA5XcRiuWqHb1EBsIR9Ipc689Txz5I="
+    - secure: "TB2BwOSg/GlodfPVVfDY4wb73zYccKjnzEOVC2xe0iHmf+u55KTlYhDGeug80dOWF52MOiRFeGdEbe7+CdpgE+vtSKNdmbsV7HGBL+XGm+VhKElGVTkqTS2qN10RK4WKxZWnpy2fJY5j7n8DRI3so9hps2hTFj0x8/xcoliPJcg="
 
 branches:
   # blocklist
