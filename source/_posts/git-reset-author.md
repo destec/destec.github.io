@@ -1,9 +1,8 @@
 ---
 title: git 重置 commit 中的 name 和 email
 date: 2017-09-06 18:28:14
-tags:
+tags: git
 ---
-# git 重置 commit 中的 name 和 email
 
 这两天换了自己的电脑开发公司的项目，项目 clone 下来之后二话不说直接开始写代(bu)码(g)，直到今天下午 `git log` 时才发现 user name 和 user email 还没有更改默认的值，这就很尴尬了。
 

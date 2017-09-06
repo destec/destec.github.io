@@ -11,7 +11,7 @@ branches:
   except:
   - master
   only:
-  - gh-pages
+  - source
 
 # Travis-CI Caching
 cache:
@@ -26,7 +26,7 @@ before_script:
   # - npm install hexo
 
 script:
-  - cat _config.yml
+  # - cat _config.yml
   - hexo generate --debug
 
 after_script:
