@@ -22,7 +22,7 @@ RESTFul API 作为目前业界前后端沟通的主要方式，在面临业务�
 
 当然，有的同学肯定要来打脸，“我一个 GET /posts 请求一步到位，哪有这么麻烦！”。
 
-![laofu](/Users/catalystx/Downloads/laofu.png)
+![laofu](http://destec.qiniudn.com//blog/graphql-intro/laofu.png)
 
 没错，当业务简单或者数据量不大时一步到位是没有问题，但是当一个帖子里几十个字段、帖子数量几百条你试试这个接口能不能通过 code review 上线。在极尽压榨性能服务端，保持接口数据的精简是必要的，但是代价是会建立众多只有返回结构或字段不一样的 API endpoints 去满足不同业务方的需求。
 
