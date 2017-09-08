@@ -10,6 +10,8 @@ tags:
 
 正如 GraphQL 官网所描述，GraphQL 是一套数据查询语言，或者理解为一个数据抽象层，使得在不同的客户端可以使用相同的查询语法来获取数据。GraphQL 由 Facebook 在 2015 年提出，主旨在于替代 RESTFul API 查询，建立更高效和灵活的数据获取方式。和 RESTFul API 不同，GraphQL 从产品的角度出发，希望 API 能够灵活的处理复杂多变的用户场景，尤其是处理对象和关系时，能够优于现有 RESTFul API 的解决方案，这也是 GraphQL 中 graph 的来源。
 
+<!-- more -->
+
 ## RESTFul API 缺陷
 
 RESTFul API 作为目前业界前后端沟通的主要方式，在面临业务迅速发展或快速迭代时，暴露出越来越多的问题，尤其是在获取一些具有复杂关联性的资源数据时，RESTFul API 这种面向资源（对象）的请求方式变显得捉襟见肘。
