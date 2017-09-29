@@ -14,7 +14,15 @@ tags: [股市,技术指标]
 
 其中最简单的是简单移动平均线SMA，其数值等于 n 个价格的算数平均和，公式可表示为：
 $$
-\text{SMA}=\frac{\sum_{i=1}^n(Price_1+Price_2+\cdots+Price_n)}{n}\tag{1}
+\text{SMA}(n)=\frac{\sum_{i=1}^n(Price_1+Price_2+\cdots+Price_n)}{n}\tag{1}
+$$
+为了使得指标不容易钝化，需要让最新的价格权重较大，让市场的最新动向可以及时的反应与移动平均线指标上，所以产生了加权移动平均线WMA，公式可以表示为：
+$$
+\text{WMA}(n)=\frac{\sum_{i=1}^n({Price_1}\times{n}+{Price_2}\times{(n-1)+\cdots+{Price_n}\times1})}{n}\tag{2}
+$$
+除了EMA之外，另外一个更常见的加权的移动平均线形式是指数加权移动平均线EXPMA或称EMA，其一般公式可表示为：
+$$
+\text{EMA}(n)=\frac{Price_n-\text{EMA}(n-1)}{n}+\text{EMA}(n-1)\tag{3}
 $$
 利用移动平均线的常用方法是根据交叉法则来判断买入点和卖出点，当一条短均线从下至上穿过长线时，形成所谓金叉，此时利于做多。反之，当长均线从上而下穿过短均线时，形成所谓死叉，此时应做空。
 
