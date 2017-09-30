@@ -17,7 +17,9 @@ $$
 \text{SMA}(n)=\frac{\sum_{i=1}^n(Price_1+Price_2+\cdots+Price_n)}{n}\tag{1}
 $$
 为了使得指标不容易钝化，需要让最新的价格权重较大，让市场的最新动向可以及时的反应与移动平均线指标上，所以产生了加权移动平均线WMA，公式可以表示为：
-
+$$
+\text{WMA}(n)=\frac{\sum_i=1^n({Price_1}\times{n}+{Price_2}\times{(n-1)}+\cdots+{Price_n}\times{1})}{n}\tag{2}
+$$
 除了EMA之外，另外一个更常见的加权的移动平均线形式是指数加权移动平均线EXPMA或称EMA，其一般公式可表示为：
 $$
 \text{EMA}(n)=\frac{Price_n-\text{EMA}(n-1)}{n}+\text{EMA}(n-1)\tag{3}
