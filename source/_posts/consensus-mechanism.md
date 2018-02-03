@@ -19,3 +19,7 @@ tags: blockchain
 5. dBFT: delegated Byzantine Fault Tolerance, 授权拜占庭容错
 
 <!-- more -->
+
+1. PoW
+   工作量证明，从字面来看就已经可以知道，PoW 通过节点的工作量作为共识机制的衡量标准。
+2. 
