@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="常听隔壁桌老股民一脸傲娇的说，“新股民只知道简单的追涨杀跌，割的就是他们这些韭菜”。作为一个连新股民都算不上的韭菜，第一篇技术指标分析文章就先来研究下如何追(bei)涨(ge)杀(jiu)跌(cai)。">
+<meta name="keywords" content="股市,技术指标">
+<meta property="og:type" content="article">
+<meta property="og:title" content="股市技术指标分析1-移动平均线策略">
+<meta property="og:url" content="https://destec.github.io/2017/09/28/stock-indicators-1/index.html">
+<meta property="og:site_name" content="Destec&#39;s Blog">
+<meta property="og:description" content="常听隔壁桌老股民一脸傲娇的说，“新股民只知道简单的追涨杀跌，割的就是他们这些韭菜”。作为一个连新股民都算不上的韭菜，第一篇技术指标分析文章就先来研究下如何追(bei)涨(ge)杀(jiu)跌(cai)。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-11T08:32:56.656Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="股市技术指标分析1-移动平均线策略">
+<meta name="twitter:description" content="常听隔壁桌老股民一脸傲娇的说，“新股民只知道简单的追涨杀跌，割的就是他们这些韭菜”。作为一个连新股民都算不上的韭菜，第一篇技术指标分析文章就先来研究下如何追(bei)涨(ge)杀(jiu)跌(cai)。">
+
+
+
+
+
+
+  <link rel="canonical" href="https://destec.github.io/2017/09/28/stock-indicators-1/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>股市技术指标分析1-移动平均线策略 | Destec's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Destec's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://destec.github.io/2017/09/28/stock-indicators-1/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Destec">
+      <meta itemprop="description" content="一些自言自语">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/1281939">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Destec's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">股市技术指标分析1-移动平均线策略
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-09-28 01:37:29" itemprop="dateCreated datePublished" datetime="2017-09-28T01:37:29+00:00">2017-09-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-11 08:32:56" itemprop="dateModified" datetime="2019-01-11T08:32:56+00:00">2019-01-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Quant/" itemprop="url" rel="index"><span itemprop="name">Quant</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>常听隔壁桌老股民一脸傲娇的说，“新股民只知道简单的追涨杀跌，割的就是他们这些韭菜”。作为一个连新股民都算不上的韭菜，第一篇技术指标分析文章就先来研究下如何追(bei)涨(ge)杀(jiu)跌(cai)。</p>
+<a id="more"></a>
+<p>作为一般的人来说，面对自己不熟悉的领域是总是具有从众心理，而在投资中则是跟随趋势进行买卖，也就是所谓的追涨杀跌了。而如果大部分人看涨或者不断有买单进入市场，那么价格势必有更强力的支撑，反之若大部分都看空，则市场卖单较多导致价格下跌。</p>
+<p>常用的趋势型指标包括：简单移动平均线 (SMA) 、线性加权移动平均线 (WMA) 和指数加权移动平均线 (EMA) ，除此之外还有平均差 (DMA) 、趋向指标 (DMI) 、区间震荡指标 (DPO) 、平滑异动移动平均线 (MACD) 、十字滤线 (VHF) 、量价曲线 (VPT) 等。</p>
+<p>其中最简单的是简单移动平均线 SMA，其数值等于 n 个价格的算数平均和，公式可表示为：</p>
+<script type="math/tex; mode=display">
+\text{SMA}(n)=\frac{\sum_{i=1}^n(Price_1+Price_2+\cdots+Price_n)}{n}\tag{1}</script><p>为了使得指标不容易钝化，需要让最新的价格权重较大，让市场的最新动向可以及时的反应与移动平均线指标上，所以产生了加权移动平均线 WMA，公式可以表示为：</p>
+<script type="math/tex; mode=display">
+\text{WMA}(n)=\frac{\sum_i=1^n({Price_1}\times{n}+{Price_2}\times{(n-1)}+\cdots+{Price_n}\times{1})}{n}\tag{2}</script><p>除了 EMA 之外，另外一个更常见的加权的移动平均线形式是指数加权移动平均线 EXPMA 或称 EMA，其一般公式可表示为：</p>
+<script type="math/tex; mode=display">
+\text{EMA}(n)=\frac{Price_n-\text{EMA}(n-1)}{n}+\text{EMA}(n-1)\tag{3}</script><p>利用移动平均线的常用方法是根据交叉法则来判断买入点和卖出点，当一条短均线从下至上穿过长线时，形成所谓金叉，此时利于做多。反之，当长均线从上而下穿过短均线时，形成所谓死叉，此时应做空。</p>
+<p>而移动平均线的在使用中应当注意：</p>
+<blockquote>
+<p>1、在多头趋势中，价格 K 线、短天期天数线（例如（12，50）中的 12 日线）、长天期天数线（50 日线）按以上顺序从高到低排列，视为多头特征；在空头趋势中，长天期天数线、短天期天数线、价格 K 线按以上顺序从高到低排列，视为空头特征。</p>
+<p>2、当短天期天数线从下而上穿越长天期天数线时，是一个值得注意的买入信号；此时短天期天数线对价格走势将起到助涨的作用，当短天期天数线从上而下穿越长天期天数线时，是一个值得注意的卖出信号，此时长天期天数对价格走势将起到助跌的作用。</p>
+<p>3、一般来说，价格在多头市场中将处于短天期天数线和长天期天数线上方运行，此时这两条线将对价格走势形成支撑。在一个明显的多头趋势中，价格将沿短天期天数线移动，价格反复的最低点将位于长天期天数线附近；相反地，价格在空头市场中将处于短天期天数线和长天期天数线下方运行，此时这两条线将对价格走势形成压力。在一个明显的空头趋势中，价格也将沿短天期天数线移动，价格反复的最高点将位于长天期天数线附近。</p>
+<p>4、一般地，当价格 K 线在一个多头趋势中跌破短天期天数线，必将向长天期天数线靠拢，而长天期天数线将对价格走势起到较强的支撑作用，当价格跌破长 天期天数线时，往往是绝好的买入时机；相反地，当价格 K 线在一个空头趋势中突破短天期天数线后，将有进一步向长天期天数线冲刺的希望，而长天期天数线将对价格走势起到明显的阻力作用，当价格突破长天期天数线后，往往会形成一次回抽确认，而且第一次突破失败的机率较大，因此应视为一次绝好的卖出时机。</p>
+<p>5、第三条的特例是：当价格 K 线在一个多头趋势中跌破短天期天数线，并继而跌破长天期天数线，而且使得短天期天数开始转头向下运行，甚至跌破长天期 天数线，此时意味着多头趋势发生变化，应作止蚀处理；相反地，当价格 K 线在一个空头趋势中突破短天期天数线，并继而突破长天期天数线，而且使得短天期天数 开始转头向上运行，甚至突破长天期天数线，此时意味着空头趋势已经改变成多头趋势，应作补仓处理。</p>
+<p>6、价格对于长天期天数线的突破次数越多越表明突破有效，第一次突破一般会以失败而告终；价格对于长天期天数线的突破时间越长越表明突破有效。一般来说，在价格日 K 线技术指标体系中的 EXPMA 指标长天期天数线被价格突破之后，需要两到三个交易日的时间来确认突破的有效性。</p>
+<p>7、当短期天数线向上交叉长期天数线时，股价会先形成一个短暂的高点，然后微幅回档至长期天数线附近，此时为最佳买入点；当短期天数线向下交叉长期天数线时，股价会先形成一个短暂的低点，然后微幅反弹至长期天数线附近，此时为最佳卖出点。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/股市/" rel="tag"># 股市</a>
+          
+            <a href="/tags/技术指标/" rel="tag"># 技术指标</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/06/graphql-intro/" rel="next" title="GraphQL 初探">
+                <i class="fa fa-chevron-left"></i> GraphQL 初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/31/consensus-mechanism/" rel="prev" title="区块链共识机制">
+                区块链共识机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/1281939" alt="Destec">
+            
+              <p class="site-author-name" itemprop="name">Destec</p>
+              <p class="site-description motion-element" itemprop="description">一些自言自语</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Destec</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.7.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+      for (i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<style>
+.MathJax_Display {
+  overflow: auto hidden;
+}
+</style>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
