@@ -1,12 +1,15 @@
 ---
 title: GraphQL 初探
 date: 2017-09-06 21:14:05
+categories:
+  - Backend
 tags:
+  - GraphQL
 ---
 
 ## 什么是 GraphQL
 
->  GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data.
+> GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data.
 
 正如 GraphQL 官网所描述，GraphQL 是一套数据查询语言，或者理解为一个数据抽象层，使得在不同的客户端可以使用相同的查询语法来获取数据。GraphQL 由 Facebook 在 2015 年提出，主旨在于替代 RESTFul API 查询，建立更高效和灵活的数据获取方式。和 RESTFul API 不同，GraphQL 从产品的角度出发，希望 API 能够灵活的处理复杂多变的用户场景，尤其是处理对象和关系时，能够优于现有 RESTFul API 的解决方案，这也是 GraphQL 中 graph 的来源。
 
@@ -34,7 +37,7 @@ RESTFul API 作为目前业界前后端沟通的主要方式，在面临业务�
 
 GraphQL 主要由 Schema，Operation 两部分概念组成。Schema 用于在服务端建立对数据结构的描述，确保了对于数据和查询的强类型约束和自省性，而 Operation 使得客户段可以使用 DSL 对数据进行查询，而这些查询语句可以根据业务的需求自由灵活的进行编写。
 
-### Schema 
+### Schema
 
 使用 RESTFul API 去请求数据时，若不了解服务端实现和对象数据结构，是无法预测响应的结构的，而 GraphQL 则为数据建立了强类型约束，使得客户端开发同学可以在请求前获知返回结构如何，包括可以请求哪些字段、字段的类型、字段的含义，更棒的是这些均是可以嵌套的，也就是说如果返回结构中包括子对象，那么子对象的字段、字段的类型等也是可以获知的。当然这些便捷的功能需要建立在一些代码约定的基础上，类似于 ORM/ODM 的概念，这就是 schema 的作用。
 
@@ -44,27 +47,27 @@ GraphQL 主要由 Schema，Operation 两部分概念组成。Schema 用于在服
 const PostType = new GraphQLObjectType({
   name: 'PostType',
   fields: () => ({
-  	id: {
+    id: {
       type: GraphQLID,
-      description: 'the unique id for the post'
-  	},
+      description: 'the unique id for the post',
+    },
     title: {
       type: GraphQLString,
-      description: 'the title for the post'
+      description: 'the title for the post',
     },
     content: {
       type: GraphQLString,
-      description: 'the full content for the post'
+      description: 'the full content for the post',
     },
     author: {
       type: GraphQLString,
-      description: 'the author name for the post'
+      description: 'the author name for the post',
     },
     comments: {
       type: new GraphQLList(CommentType),
-      description: 'the comments list'
-    }
-  })
+      description: 'the comments list',
+    },
+  }),
 });
 ```
 
@@ -72,19 +75,19 @@ const PostType = new GraphQLObjectType({
 const CommentType = new GraphQLObjectType({
   name: 'CommentType',
   fields: () => ({
-  	id: {
+    id: {
       type: GraphQLID,
-      description: 'the unique id for the comment item'
-  	},
+      description: 'the unique id for the comment item',
+    },
     user: {
       type: GraphQLString,
-      description: 'the username for the comment item'
+      description: 'the username for the comment item',
     },
     content: {
       type: GraphQLString,
-      description: 'the full comment content for the comment item'
-    }
-  })
+      description: 'the full comment content for the comment item',
+    },
+  }),
 });
 ```
 
@@ -93,7 +96,7 @@ const CommentType = new GraphQLObjectType({
 当然以上建立的仅仅是描述性的 schema，想要获取数据还需要给每个 schema 加上 `resolve` 函数，定义 数据获取的实现。最简单的，若想要返回固定的值，只需要定义:
 
 ```js
-resolve: () => 'test post'
+resolve: () => 'test post';
 ```
 
 实际的开发中，数据的获取一般需要与持久化的数据层进行交互，例如从数据库获取数据，那么就需要把数据库的查询代码定义在 `resolve` 函数中并返回，另外条件查询需要也可以将条件参数通过 `resolve` 函数进行传参：
@@ -102,10 +105,10 @@ resolve: () => 'test post'
 resolve: async (_, args) => {
   return await db.Posts.find({
     where: {
-      id: args.id
-    }
+      id: args.id,
+    },
   });
-}
+};
 ```
 
 ### Operation
@@ -170,31 +173,40 @@ query {
 ```json
 {
   "data": {
-    "post": [{
-      "id": 2,
-      "title": "another post",
-      "content": "some other text",
-      "author": "admin",
-      "comments": [{
-        "user": "user1",
-        "contents": "nice!"
-      }, {
-        "user": "user2",
-        "contents": "exthausted..."
-      }]
-    }, {
-      "id": 1,
-      "title": "the first post",
-      "content": "some text",
-      "author": "admin",
-      "comments": [{
-        "user": "user1",
-        "contents": "boring post"
-      }, {
-        "user": "user2",
-        "contents": "great post!"
-      }]
-    }]
+    "post": [
+      {
+        "id": 2,
+        "title": "another post",
+        "content": "some other text",
+        "author": "admin",
+        "comments": [
+          {
+            "user": "user1",
+            "contents": "nice!"
+          },
+          {
+            "user": "user2",
+            "contents": "exthausted..."
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "title": "the first post",
+        "content": "some text",
+        "author": "admin",
+        "comments": [
+          {
+            "user": "user1",
+            "contents": "boring post"
+          },
+          {
+            "user": "user2",
+            "contents": "great post!"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -213,7 +225,7 @@ query {
 query {
   __schema {
     queryType {
-      name 
+      name
       fields {
         name
       }
@@ -230,7 +242,7 @@ query {
       fields {
         name
       }
-    } 
+    }
   }
 }
 ```
@@ -266,9 +278,8 @@ schema 的查询返回结果：
 }
 ```
 
-所以，通过内置的 __schema 查询方法，可以自省的查询到当前可用的 schema 和 operation。这样对于后端开发同学编写接口的文档，而客户端开发也可以方便的了解接口的细节，甚至将自省查询放在业务查询前，进行字段检验。
+所以，通过内置的 \_\_schema 查询方法，可以自省的查询到当前可用的 schema 和 operation。这样对于后端开发同学编写接口的文档，而客户端开发也可以方便的了解接口的细节，甚至将自省查询放在业务查询前，进行字段检验。
 
 ## GraphQL 发展
 
-目前 GraphQL 已经有多种语言实现的版本，服务端除了官方支持的 JavaScript（[graphql-js](https://github.com/graphql/graphql-js)）(github starts > 5000) 版本实现外，Java/Scala，Python，Golang 等语言均已经提供了社区版本，而在客户端，目前也提供了 JavaScript(React，React Native，Angular2等) 和 iOS(Swift) 的 SDK。另外，官方还提供了一些方便开发者进行学习和调试的工具，例如可交互式的 IDE [graphiql](https://github.com/graphql/graphiql)。
-
+目前 GraphQL 已经有多种语言实现的版本，服务端除了官方支持的 JavaScript（[graphql-js](https://github.com/graphql/graphql-js)）(github starts > 5000) 版本实现外，Java/Scala，Python，Golang 等语言均已经提供了社区版本，而在客户端，目前也提供了 JavaScript(React，React Native，Angular2 等) 和 iOS(Swift) 的 SDK。另外，官方还提供了一些方便开发者进行学习和调试的工具，例如可交互式的 IDE [graphiql](https://github.com/graphql/graphiql)。

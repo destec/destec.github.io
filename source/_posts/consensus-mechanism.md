@@ -1,10 +1,14 @@
 ---
 title: 区块链共识机制
 date: 2018-01-31 23:23:30
-tags: blockchain
+categories:
+  - Blockchain
+tags:
+  - blockchain
+  - consensus
 ---
 
- 在区块链世界中，最为常见的一个词就是“去中心化”。
+在区块链世界中，最为常见的一个词就是“去中心化”。
 
 “去中心化”是一个摆脱垄断和集权的美好愿景，但是在现实生活中，很多做出决策的场景都是存在中心节点的（回忆一下领导这个角色在生活中存在的广泛性），存在即合理，中心化决策所具有权威性是很明显的。
 
@@ -12,7 +16,7 @@ tags: blockchain
 
 目前比较常见的共识机制有如下几种
 
-1. PoW: Proof of Work, 工作量证明 
+1. PoW: Proof of Work, 工作量证明
 2. PoS: Proof of Stake, 权益证明
 3. DPos: Delegate Proof of Stake, 股权授权证明
 4. PBFT: Practical Byzantine Fault Tolerance, 实用拜占庭容错
@@ -28,4 +32,3 @@ tags: blockchain
 ## PoS
 
 权益证明，为了解决 PoW 共识机制中存在的资源浪费的问题所诞生。
-

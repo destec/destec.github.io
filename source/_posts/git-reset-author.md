@@ -1,7 +1,10 @@
 ---
 title: git 重置 commit 中的 name 和 email
 date: 2017-09-06 18:28:14
-tags: git
+categories:
+  - Skills
+tags:
+  - git
 ---
 
 这两天换了自己的电脑开发公司的项目，项目 clone 下来之后二话不说直接开始写代(bu)码(g)，直到今天下午 `git log` 时才发现 user name 和 user email 还没有更改默认的值，这就很尴尬了。
@@ -20,11 +23,11 @@ tags: git
 git filter-branch --commit-filter '
 	if [ "$GIT_AUTHOR_NAME" = 'origin_name' ];
 	then
-		GIT_AUTHOR_NAME="new_name"; 		
-		GIT_AUTHOR_EMAIL="new_email@foo.com"; 
-		git commit-tree "$@"; 
+		GIT_AUTHOR_NAME="new_name";
+		GIT_AUTHOR_EMAIL="new_email@foo.com";
+		git commit-tree "$@";
 	else
-		git commit-tree "$@"; 
+		git commit-tree "$@";
 	fi' HEAD
 ```
 

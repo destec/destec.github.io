@@ -86,10 +86,17 @@ theme_config:
     home: / || home
     # about: /about/ || user
     tags: /tags/ || tags
-    # categories: /categories/ || th
-    archives: /archives/ || archive
+    categories: /categories/ || th
+    # archives: /archives/ || archive
   avatar:
     url: https://avatars0.githubusercontent.com/u/1281939
     rounded: false
     opacity: 1
     rotated: false
+  scheme: Gemini
+  math:
+    enable: true
+    per_page: false
+    engine: mathjax
+    mathjax:
+      cdn: //cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML
